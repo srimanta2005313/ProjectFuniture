@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Dark Theme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0a0a;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23333" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23444" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23555" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            padding: 1px 10px;
+        }
+
+        .logo-image {
+            border-radius: 60%;
+            height: 55px;
+            width: 45px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            color: #d9d9d9;
+            margin-left: 25px;
+            text-shadow: 1px 1px 3px rgba(2, 2, 2, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Signup Container */
+        .signup-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease forwards;
+            margin-top: 100px;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            z-index: -1;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .signup-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .signup-subtitle {
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        /* Select Dropdown Styles */
+        .form-select {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23ccc" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 20px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-select option {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 0.5rem;
+        }
+
+        /* Date Input Styles */
+        .form-input[type="date"] {
+            position: relative;
+            color-scheme: dark;
+        }
+
+        .form-input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #ef4444; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #10b981; width: 75%; }
+        .strength-strong { background: #667eea; width: 100%; }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Footer Links */
+        .signup-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: -1;
+        }
+
+        .float-1 {
+            width: 100px;
+            height: 80px;
+            top: 15%;
+            left: 5%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-2 {
+            width: 120px;
+            height: 60px;
+            top: 60%;
+            right: 8%;
+            animation: float 4s ease-in-out infinite reverse;
+        }
+
+        .float-3 {
+            width: 80px;
+            height: 100px;
+            bottom: 10%;
+            left: 10%;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1001;
+            max-width: 400px;
+        }
+
+        .flash-message {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+            animation: slideInRight 0.5s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flash-message.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .flash-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: flashShimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes flashShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .field-error {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .field-success {
+            color: #10b981;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .signup-container {
+                margin: 1rem;
+                padding: 2rem;
+                margin-top: 100px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .floating-element {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+            }
+            
+            .signup-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+  
+
+    <!-- Floating Background Elements -->
+    <div class="floating-element float-1"></div>
+    <div class="floating-element float-2"></div>
+    <div class="floating-element float-3"></div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ 'success' if category == 'success' else 'error' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1 class="signup-title">Join Us</h1>
+            <p class="signup-subtitle">Create your account to get started</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            {{ form.hidden_tag() }}
+
+            <!-- Username & Email Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-input", placeholder="Choose a username") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-input", placeholder="Enter your email") }}
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Gender & Date of Birth Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.gender.label(class="form-label") }}
+                    {{ form.gender(class="form-select") }}
+                    {% if form.gender.errors %}
+                        {% for error in form.gender.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.dob.label(class="form-label") }}
+                    {{ form.dob(class="form-input") }}
+                    {% if form.dob.errors %}
+                        {% for error in form.dob.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-input", placeholder="Create a strong password", id="password") }}
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="strengthBar"></div>
+                </div>
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="form-group">
+                {{ form.conform_password.label(class="form-label") }}
+                {{ form.conform_password(class="form-input", placeholder="Confirm your password", id="conform_password") }}
+                <div class="field-error" id="passwordMatch" style="display: none;">Passwords do not match</div>
+                {% if form.conform_password.errors %}
+                    {% for error in form.conform_password.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            {{ form.submit(class="submit-button") }}
+
+            <!-- Footer Links -->
+            <div class="signup-footer">
+                <p style="color: #ccc; margin-bottom: 0.5rem;">Already have an account?</p>
+                <a href="{{ url_for('login') }}" class="footer-link">Sign in here</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('conform_password');
+            const strengthBar = document.getElementById('strengthBar');
+            const passwordMatchError = document.getElementById('passwordMatch');
+
+            // Password strength checker
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // Check password criteria
+                if (password.length >= 8) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+                // Update strength bar
+                strengthBar.className = 'password-strength-bar';
+                if (strength <= 1) {
+                    strengthBar.classList.add('strength-weak');
+                } else if (strength <= 2) {
+                    strengthBar.classList.add('strength-fair');
+                } else if (strength <= 3) {
+                    strengthBar.classList.add('strength-good');
+                } else {
+                    strengthBar.classList.add('strength-strong');
+                }
+            });
+
+            // Password match checker
+            function checkPasswordMatch() {
+                if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+                    passwordMatchError.style.display = 'block';
+                    confirmPasswordInput.style.borderColor = '#ef4444';
+                } else {
+                    passwordMatchError.style.display = 'none';
+                    confirmPasswordInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                }
+            }
+
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            passwordInput.addEventListener('input', checkPasswordMatch);
+
+            // Form validation feedback
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim() !== '' && this.checkValidity()) {
+                        this.style.borderColor = '#10b981';
+                    }
+                });
+            });
+
+            // Auto-hide flash messages
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                setTimeout(() => {
+                    flashMessages.style.opacity = '0';
+                    setTimeout(() => {
+                        flashMessages.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

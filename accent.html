@@ -1,0 +1,1105 @@
+{% extends "layout.html" %}
+
+   {% block content %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .category-header {
+            text-align: center;
+            padding: 150px 20px;
+            background-image: url('https://img.freepik.com/free-photo/view-modern-entryway-with-interior-designed-furniture_23-2150791010.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            color: #fff;
+        }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .category-header h1,
+        .category-header p,
+        .category-header span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .category-header p {
+            font-size: 1.25rem;
+            margin: 10px 0;
+        }
+
+        .category-header span {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+      
+
+        .cart-icon {
+            position: relative;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            color: #667eea;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: #111;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .sort-dropdown {
+            padding: 0.7rem 1rem;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 4rem 0;
+            background: #0a0a0a;
+        }
+
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .product-image {
+            height: 250px;
+            background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover .product-image::after {
+            left: 100%;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .product-name {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            padding: 4rem 0;
+            background: #111;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .featured-card:hover::before {
+            opacity: 1;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .featured-card h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .featured-card p {
+            color: #ccc;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        .footer-text {
+            color: #666;
+            margin-top: 2rem;
+        }
+
+        /* Cart Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .cart-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-header h2 {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            text-align: center;
+            padding: 1rem 0;
+            border-top: 2px solid #667eea;
+            margin-top: 1rem;
+        }
+
+        .cart-total h3 {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .category-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+   
+
+    <!-- Category Header -->
+    <section class="category-header">
+        <h1>{{title}}</h1>
+        <p></p>
+        <span id="productCount"></span>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Products</button>
+                <button class="filter-btn" data-filter="table">Table</button>
+                <button class="filter-btn" data-filter="mirror">Mirror</button>
+                <button class="filter-btn" data-filter="accent-chairs">Chair</button>
+                <button class="filter-btn" data-filter="lamp">Lamp</button>
+                <button class="filter-btn" data-filter="storage">Storage</button>
+
+                
+            </div>
+            <select class="sort-dropdown" id="sortDropdown">
+                <option value="featured">Sort by: Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+                <option value="rating">Customer Rating</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="products-container">
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured-section">
+        <h2 class="section-title">Perfect Your Space with Accent Pieces</h2>
+        <div class="featured-grid">
+            <div class="featured-card">
+                <h3>Statement Pieces</h3>
+                <p>Transform any room with our carefully curated accent furniture that serves as both functional pieces and conversation starters.</p>
+            </div>
+            <div class="featured-card">
+                <h3>Versatile Design</h3>
+                <p>Our accent pieces are designed to complement various interior styles, from modern minimalist to classic traditional décor.</p>
+            </div>
+            <div class="featured-card">
+                <h3>Quality Materials</h3>
+                <p>Each piece is crafted from premium materials including solid wood, genuine leather, marble, and high-quality metals for lasting beauty.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#shipping">Shipping Info</a>
+                <a href="#returns">Returns</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+            <p class="footer-text">&copy; 2024 B&S Co. All rights reserved. Creating beautiful spaces, one room at a time.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>Shopping Cart</h2>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <h3>Total: $<span id="cartTotal">0</span></h3>
+                <a href="/buy" ><button class="checkout-btn">Buy Now</button></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product data
+        const products = [
+            {
+                id: 1,
+                name: "Velvet Accent Chair",
+                category: "accent-chairs",
+                price: 4349,
+                originalPrice: 9999,
+                description: "Luxurious velvet accent chair with gold legs, perfect for adding elegance to any room.",
+                image: "https://img.freepik.com/free-photo/grey-comfortable-armchair-isolated-white-background_181624-25295.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "Sell",
+                categoryName: ""
+            },
+            {
+                id: 2,
+                name: "Marble Side Table",
+                category: "storage",
+                price: 8749,
+                originalPrice: 9999,
+                description: "Contemporary marble-top side table with geometric metal base, ideal for modern spaces.",
+                image: "https://img.freepik.com/free-photo/beautiful-pink-roses-vase-table_53876-160511.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 3,
+                name: "Ottoman Storage Bench",
+                category: "accent-chairs",
+                price: 8549,
+                originalPrice: 9999,
+                description: "Multi-functional storage ottoman in premium leather, perfect for seating and storage.",
+                image: "https://img.freepik.com/premium-photo/expansive-storage-seating-solution_971989-20880.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "New",
+                categoryName: ""
+            },
+            {
+                id: 4,
+                name: "Sunburst Mirror",
+                category: "mirror",
+                price: 5549,
+                originalPrice: 9999,
+                description: "Stunning gold sunburst mirror that creates a focal point and amplifies natural light.",
+                image: "https://img.freepik.com/premium-psd/golden-sunburst-mirror-illustration-gradient-background_1344778-3829.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 5,
+                name: "Mid-Century Lounge Chair",
+                category: "accent-chairs",
+                price: 4549,
+                originalPrice: 9999,
+                description: "Classic mid-century design with walnut frame and premium leather upholstery.",
+                image: "https://img.freepik.com/premium-photo/luxury-chair-upholstery-white-background-indoor-modern-room_1103290-6137.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 6,
+                name: "Wooden Nesting Tables",
+                category: "accent-chairs",
+                price: 3449,
+                originalPrice: 9999,
+                description: "Set of 3 nesting tables in rich oak finish, providing versatile surface space.",
+                image: "data:image/jpeg;base64,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",
+                alt:"Living Room",
+                badge: "Sell",
+                categoryName: ""
+            },
+            {
+                id: 7,
+                name: "Floor Lamp Sculpture",
+                category: "Lamp",
+                price: 8749,
+                originalPrice: 9999,
+                description: "Artistic floor lamp with sculptural design, combining function with modern art.",
+                image: "https://img.freepik.com/free-photo/view-futuristic-light-lamp-design_23-2151037552.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 8,
+                name: "Floating Shelf Set",
+                category: "storage",
+                price: 6849,
+                originalPrice: 9999,
+                description: "Minimalist floating shelves in natural wood, perfect for displaying books and decor.",
+                image: "https://img.freepik.com/free-vector/modern-furniture-elements-realistic-set-four-wooden-shelves-with-green-houseplants-pots-vector-illustration_1284-81277.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 9,
+                name: "Swivel Reading Chair",
+                category: "accent-chairs",
+                price: 3549,
+                originalPrice: 9999,
+                description: "Comfortable swivel chair with built-in reading light and premium fabric upholstery.",
+                image: "https://img.freepik.com/free-photo/grey-comfortable-armchair-isolated-white-background_181624-25295.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "Sell",
+                categoryName: ""
+            },
+            {
+                id: 10,
+                name: "Round Wall Mirror",
+                category: "mirror",
+                price: 6349,
+                originalPrice: 9999,
+                description: "Large round mirror with brass frame, perfect for entryways or above console tables.",
+                image: "https://img.freepik.com/free-photo/room-decor-with-round-woven-frame-with-white-center-reed-vase-hanging-wall_181624-48135.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "New",
+                categoryName: ""
+            },
+            {
+                id: 11,
+                name: ">Glass Console Table",
+                category: "table",
+                price: 6459,
+                originalPrice: 9999,
+                description: "Sleek glass console table with chrome legs, ideal for modern and minimalist interiors.",
+                image: "https://img.freepik.com/premium-photo/close-up-vase-coffee-table_1048944-15078852.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 12,
+                name: "Ceramic Vase Set",
+                category: "",
+                price: 6496,
+                originalPrice: 9999,
+                description: "Set of 3 handcrafted ceramic vases in varying heights, perfect for fresh or dried flowers.",
+                image: "https://img.freepik.com/free-photo/close-up-arrangement-modern-vases_23-2149646557.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "New",
+                categoryName: ""
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+        let currentFilter = 'all';
+        let currentSort = 'featured';
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            setupEventListeners();
+            updateCartUI();
+        });// Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderProducts();
+                });
+            });
+
+            // Sort dropdown
+            document.getElementById('sortDropdown').addEventListener('change', function() {
+                currentSort = this.value;
+                renderProducts();
+            });
+
+            // Cart modal
+            document.getElementById('cartIcon').addEventListener('click', openCartModal);
+            document.getElementById('closeCart').addEventListener('click', closeCartModal);
+            document.getElementById('cartModal').addEventListener('click', function(e) {
+                if (e.target === this) closeCartModal();
+            });
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }
+
+        // Render products
+        function renderProducts() {
+            const container = document.getElementById('productsGrid');
+            let filteredProducts = products;
+
+            // Apply filter
+            if (currentFilter !== 'all') {
+                filteredProducts = products.filter(product => product.category === currentFilter);
+            }
+
+            // Apply sort
+            switch (currentSort) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'newest':
+                    filteredProducts.sort((a, b) => b.id - a.id);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => (b.rating || 4.5) - (a.rating || 4.5));
+                    break;
+                default:
+                    // Featured - keep original order
+                    break;
+            }
+
+            // Update product count
+            document.getElementById('productCount').textContent = `${filteredProducts.length} Products Available`;
+
+            // Render products
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" data-category="${product.category}">
+                    ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
+                    <div class="product-image">
+                        <div class="image-container">
+                            <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='🍽️';">
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${product.categoryName}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">
+                            <span class="price">$${product.price}</span>
+                            ${product.originalPrice ? `<span class="original-price">$${product.originalPrice}</span>` : ''}
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add animation to products
+            container.querySelectorAll('.product-card').forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
+                card.style.opacity = '0';
+            });
+        }
+
+        // Add to cart function
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            showAddedToCartAnimation();
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+            renderCartItems();
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = cartCount;
+            
+            if (cartCount > 0) {
+                document.getElementById('cartCount').style.display = 'flex';
+            } else {
+                document.getElementById('cartCount').style.display = 'none';
+            }
+        }
+
+        // Show added to cart animation
+        function showAddedToCartAnimation() {
+            const cartIcon = document.getElementById('cartIcon');
+            cartIcon.style.transform = 'scale(1.2)';
+            cartIcon.style.color = '#667eea';
+            
+            setTimeout(() => {
+                cartIcon.style.transform = 'scale(1)';
+                cartIcon.style.color = '#fff';
+            }, 200);
+        }
+
+        // Open cart modal
+        function openCartModal() {
+            document.getElementById('cartModal').style.display = 'block';
+            renderCartItems();
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close cart modal
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Render cart items
+        function renderCartItems() {
+            const container = document.getElementById('cartItems');
+            const totalContainer = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #ccc; text-align: center; padding: 2rem;">Your cart is empty</p>';
+                totalContainer.textContent = '0';
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalContainer.textContent = total.toFixed(2);
+
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none';">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price} x ${item.quantity}</div>
+                        <button onclick="removeFromCart(${item.id})" style="background: #ff4444; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem;">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(0, 0, 0, 0.98)';
+                nav.style.padding = '0.5rem 2rem';
+            } else {
+                nav.style.background = 'rgba(0, 0, 0, 0.95)';
+                nav.style.padding = '1rem 2rem';
+            }
+        });
+
+        // Add smooth scrolling and intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe featured cards
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.featured-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('mobile-active');
+        }
+
+        // Add mobile menu styles if needed
+        const mobileMenuStyles = `
+            @media (max-width: 768px) {
+                .nav-links.mobile-active {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: rgba(0, 0, 0, 0.95);
+                    padding: 1rem;
+                    gap: 1rem;
+                }
+            }
+        `;
+
+        // Error handling for images
+        function handleImageError(img) {
+            img.style.display = 'none';
+            img.parentElement.innerHTML = '🍽️';
+        }
+
+        // Add CSS for mobile menu
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = mobileMenuStyles;
+        document.head.appendChild(styleSheet);
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            setupEventListeners();
+            updateCartUI();
+            
+            // Add loading animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
+{% endblock content %}

@@ -1,0 +1,1102 @@
+{% extends "layout.html" %}
+
+   {% block content %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .category-header {
+            text-align: center;
+            padding: 150px 20px;
+            background-image: url('https://www.freevector.com/uploads/vector/preview/33392/VECTEEZY_BLACK_BACKGROUND_PS1220.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            color: #fff;
+        }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .category-header h1,
+        .category-header p,
+        .category-header span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .category-header p {
+            font-size: 1.25rem;
+            margin: 10px 0;
+        }
+
+        .category-header span {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+      
+
+        .cart-icon {
+            position: relative;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            color: #667eea;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: #111;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .sort-dropdown {
+            padding: 0.7rem 1rem;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 4rem 0;
+            background: #0a0a0a;
+        }
+
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+        }
+
+        .product-image {
+            height: 250px;
+            background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover .product-image::after {
+            left: 100%;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .product-name {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            padding: 4rem 0;
+            background: #111;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .featured-card:hover::before {
+            opacity: 1;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .featured-card h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .featured-card p {
+            color: #ccc;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Footer */
+        footer {
+            background: #000;
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        .footer-text {
+            color: #666;
+            margin-top: 2rem;
+        }
+
+        /* Cart Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .cart-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-header h2 {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            text-align: center;
+            padding: 1rem 0;
+            border-top: 2px solid #667eea;
+            margin-top: 1rem;
+        }
+
+        .cart-total h3 {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .category-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+   
+
+    <!-- Category Header -->
+    <section class="category-header">
+        <h1>{{title}}</h1>
+        <p></p>
+        <span id="productCount"></span>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Products</button>
+                <button class="filter-btn" data-filter="sofa">Sofa</button>
+                <button class="filter-btn" data-filter="bed">Bed</button>
+                <button class="filter-btn" data-filter="chairs">Chair</button>
+                <button class="filter-btn" data-filter="table">Table</button>
+                <button class="filter-btn" data-filter="kitchen">Kitchen Set</button>
+
+                
+            </div>
+            <select class="sort-dropdown" id="sortDropdown">
+                <option value="featured">Sort by: Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest First</option>
+                <option value="rating">Customer Rating</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="products-container">
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured-section">
+        <h2 class="section-title">Perfect Your Space with Accent Pieces</h2>
+        <div class="featured-grid">
+            <div class="featured-card">
+                <h3>Statement Pieces</h3>
+                <p>Transform any room with our carefully curated accent furniture that serves as both functional pieces and conversation starters.</p>
+            </div>
+            <div class="featured-card">
+                <h3>Versatile Design</h3>
+                <p>Our accent pieces are designed to complement various interior styles, from modern minimalist to classic traditional décor.</p>
+            </div>
+            <div class="featured-card">
+                <h3>Quality Materials</h3>
+                <p>Each piece is crafted from premium materials including solid wood, genuine leather, marble, and high-quality metals for lasting beauty.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#shipping">Shipping Info</a>
+                <a href="#returns">Returns</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+            <p class="footer-text">&copy; 2024 B&S Co. All rights reserved. Creating beautiful spaces, one room at a time.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>Shopping Cart</h2>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <h3>Total: $<span id="cartTotal">0</span></h3>
+               <a href="/buy" ><button class="checkout-btn">Buy Now</button></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product data
+        const products = [
+            {
+                id: 1,
+                name: "Elysian Velvet Sofa ",
+                category: "sofa",
+                price: 999,
+                originalPrice: 9999,
+                description: "The Elysian Velvet Sofa is a soft and comfortable sofa with rich velvet fabric.Its elegant design adds style and coziness to your living room.",
+                image: "https://img.freepik.com/free-photo/decor-relax-pillow-room-interior_1203-4877.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room", 
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 2,
+                name: "Imperial Grace Recliner",
+                category: "chairs",
+                price: 9999,
+                originalPrice: 9999,
+                description: "The Imperial Grace Recliner is a comfortable chair that lets you lean back and relax with ease. It’s perfect for resting, watching TV, or reading at home.",
+                image: "https://img.freepik.com/free-photo/pillow-light-indoor-modern-room_1203-4117.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 3,
+                name: "Opal Crest Bedframe",
+                category: "bed",
+                price: 4329,
+                originalPrice: 9999,
+                description: "The Opal Crest Bedframe features a sturdy design with a stylish headboard that adds elegance to your bedroom. It provides strong support for a comfortable night’s sleep.",
+                image: "https://img.freepik.com/free-photo/rococo-interior-design-style_23-2151918324.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room" ,
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 4,
+                name: "Seina Royal Sleepframe",
+                category: "bed",
+                price: 6349,
+                originalPrice: 9999,
+                description: "The Seina Royal Sleepframe is a sturdy and elegant bed frame designed to support your mattress without needing a box spring. Its timeless design adds a touch of luxury and stability to your ",
+                image: "https://img.freepik.com/free-photo/interior-design-beautiful-castle_23-2151010479.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "Expensive",
+                categoryName: ""
+            },
+            {
+                id: 5,
+                name: "Palazzo Marble Table",
+                category: "table",
+                price: 9649,
+                originalPrice: 9999,
+                description: " The Palazzo Marble Table has a shiny marble top with a strong and stylish base. It looks elegant and is perfect for your dining or living room.",
+                image: "https://img.freepik.com/premium-photo/marble-podium-medieval-castles-grand-hall_974629-307087.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740", alt:"Living Room" ,
+                badge: "New",
+                categoryName: ""
+            },
+            {
+                id: 6,
+                name: "Vrsailles Gold Dinning ",
+                category: "kitchen",
+                price: 8649,
+                originalPrice: 9999,
+                description: "The Vrsailles Gold Dining Suite has a luxurious gold finish with a stylish table and matching chairs. It makes your dining room look elegant and classy while offering comfortable seating.",
+                image: "https://img.freepik.com/free-photo/top-view-plates-cutlery-glasses_23-2148914880.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room" ,
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 7,
+                name: "Duchess Swivel Chair",
+                category: "chairs",
+                price: 6949,
+                originalPrice: 9999,
+                description: "The **Duchess Swivel Chair** is a comfy and stylish chair that turns smoothly in any direction. It’s perfect for relaxing, working, or enjoying conversations ",
+                image: "https://img.freepik.com/premium-photo/orange-office-chair-with-white-desk-computer-it_636537-137412.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 8,
+                name: " Aurora Cloud Bed",
+                category: "bed",
+                price: 6249,
+                originalPrice: 9999,
+                description: "The Aurora Cloud Bed is a soft and cozy bed frame with plush cushioning that feels like sleeping on a cloud. It adds a dreamy and comfortable look to your bedroom.",
+                image: "https://img.freepik.com/premium-photo/bed-with-elegant-bedding-floating-cloud-stars_1120824-20878.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740", alt:"Living Room" ,
+                badge: "Sold",
+                categoryName: ""
+            },
+            {
+                id: 9,
+                name: "Grand Mirror Cabinet",
+                category: "storage",
+                price: 3649,
+                originalPrice: 9999,
+                description: "The Chateau Grand Mirror Cabinet is a stylish storage unit with a large mirror and spacious shelves inside. It adds both elegance and practical organization to your bedroom ",
+                image: "https://img.freepik.com/premium-photo/white-ornate-armoire-luxurious-interior_560919-6083.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "",
+                categoryName: ""
+            },
+            {
+                id: 10,
+                name: "Victoria Throne Armchair",
+                category: "chairs",
+                price: 8649,
+                originalPrice: 9999,
+                description: "The Victoria Throne Armchair is a luxurious and comfortable chair with elegant, high-backed design and plush cushioning. It adds a regal and stylish touch to any living room or study.",
+                image:"https://img.freepik.com/free-photo/beautiful-castle-architecture_23-2150754908.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "NEW",
+                categoryName: ""
+            },
+            {
+                id: 11,
+                name: "Chesterfield Sofa",
+                category: "sofa",
+                price: 4649,
+                originalPrice: 9999,
+                description: "The Monarch Chesterfield Sofa is a classic, tufted sofa with deep buttoned upholstery and rolled arms for a timeless, elegant look. It’s built to be comfortable and stylish, ",
+                image: "https://img.freepik.com/premium-photo/divan-is-honor-burgundy-color-interior_237672-750.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room",
+                badge: "SELL",
+                categoryName: ""
+            },
+            {
+                id: 12,
+               name: "Opaline Lounge Chaise",
+                category: "chairs",
+                price: 8649,
+                originalPrice: 9999,
+                description: "The Opaline Lounge Chaise is a long, cushioned seat designed for relaxing and stretching out comfortably. Its modern and chic design adds a soothing and stylish vibe to any room.",
+                image: "https://img.freepik.com/free-photo/resort-umbrella-swimming-ocean-filter_1203-6264.jpg?ga=GA1.1.316598140.1746959849&semt=ais_hybrid&w=740",
+                alt:"Living Room" ,
+                badge: "NEW",
+                categoryName: ""
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+        let currentFilter = 'all';
+        let currentSort = 'featured';
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            setupEventListeners();
+            updateCartUI();
+        });// Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderProducts();
+                });
+            });
+
+            // Sort dropdown
+            document.getElementById('sortDropdown').addEventListener('change', function() {
+                currentSort = this.value;
+                renderProducts();
+            });
+
+            // Cart modal
+            document.getElementById('cartIcon').addEventListener('click', openCartModal);
+            document.getElementById('closeCart').addEventListener('click', closeCartModal);
+            document.getElementById('cartModal').addEventListener('click', function(e) {
+                if (e.target === this) closeCartModal();
+            });
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }
+
+        // Render products
+        function renderProducts() {
+            const container = document.getElementById('productsGrid');
+            let filteredProducts = products;
+
+            // Apply filter
+            if (currentFilter !== 'all') {
+                filteredProducts = products.filter(product => product.category === currentFilter);
+            }
+
+            // Apply sort
+            switch (currentSort) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'newest':
+                    filteredProducts.sort((a, b) => b.id - a.id);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => (b.rating || 4.5) - (a.rating || 4.5));
+                    break;
+                default:
+                    // Featured - keep original order
+                    break;
+            }
+
+            // Update product count
+            document.getElementById('productCount').textContent = `${filteredProducts.length} Products Available`;
+
+            // Render products
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" data-category="${product.category}">
+                    ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
+                    <div class="product-image">
+                        <div class="image-container">
+                            <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='🍽️';">
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${product.categoryName}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">
+                            <span class="price">$${product.price}</span>
+                            ${product.originalPrice ? `<span class="original-price">$${product.originalPrice}</span>` : ''}
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add animation to products
+            container.querySelectorAll('.product-card').forEach((card, index) => {
+                card.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.1}s`;
+                card.style.opacity = '0';
+            });
+        }
+
+        // Add to cart function
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            showAddedToCartAnimation();
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+            renderCartItems();
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = cartCount;
+            
+            if (cartCount > 0) {
+                document.getElementById('cartCount').style.display = 'flex';
+            } else {
+                document.getElementById('cartCount').style.display = 'none';
+            }
+        }
+
+        // Show added to cart animation
+        function showAddedToCartAnimation() {
+            const cartIcon = document.getElementById('cartIcon');
+            cartIcon.style.transform = 'scale(1.2)';
+            cartIcon.style.color = '#667eea';
+            
+            setTimeout(() => {
+                cartIcon.style.transform = 'scale(1)';
+                cartIcon.style.color = '#fff';
+            }, 200);
+        }
+
+        // Open cart modal
+        function openCartModal() {
+            document.getElementById('cartModal').style.display = 'block';
+            renderCartItems();
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close cart modal
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Render cart items
+        function renderCartItems() {
+            const container = document.getElementById('cartItems');
+            const totalContainer = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #ccc; text-align: center; padding: 2rem;">Your cart is empty</p>';
+                totalContainer.textContent = '0';
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalContainer.textContent = total.toFixed(2);
+
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none';">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price} x ${item.quantity}</div>
+                        <button onclick="removeFromCart(${item.id})" style="background: #ff4444; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem;">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(0, 0, 0, 0.98)';
+                nav.style.padding = '0.5rem 2rem';
+            } else {
+                nav.style.background = 'rgba(0, 0, 0, 0.95)';
+                nav.style.padding = '1rem 2rem';
+            }
+        });
+
+        // Add smooth scrolling and intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe featured cards
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.featured-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('mobile-active');
+        }
+
+        // Add mobile menu styles if needed
+        const mobileMenuStyles = `
+            @media (max-width: 768px) {
+                .nav-links.mobile-active {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: rgba(0, 0, 0, 0.95);
+                    padding: 1rem;
+                    gap: 1rem;
+                }
+            }
+        `;
+
+        // Error handling for images
+        function handleImageError(img) {
+            img.style.display = 'none';
+            img.parentElement.innerHTML = '🍽️';
+        }
+
+        // Add CSS for mobile menu
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = mobileMenuStyles;
+        document.head.appendChild(styleSheet);
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            setupEventListeners();
+            updateCartUI();
+            
+            // Add loading animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
+{% endblock content %}
